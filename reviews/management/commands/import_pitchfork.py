@@ -15,7 +15,7 @@ class Command(BaseCommand):
         cur = con.cursor()
 
         years = {r["reviewid"]: r["year"] for r in cur.execute(
-            "SELECT reviewid, MAX(year) AS year FROM years GROUP BY reviewid")}
+            "SELECT reviewid, MIN(year) AS year FROM years GROUP BY reviewid")}
         labels = {r["reviewid"]: r["label"] for r in cur.execute(
             "SELECT reviewid, MIN(label) AS label FROM labels GROUP BY reviewid")}
         genres = {}
@@ -36,9 +36,9 @@ class Command(BaseCommand):
                     artist=artist_cache[name],
                     score=r["score"],
                     best_new_music=bool(r["best_new_music"]),
-                    author=r["author"] or "",
+                    author=(r["author"] or "").strip(),
                     author_type=r["author_type"] or "Contributor",
-                    label=labels.get(rid) or "other",
+                    label=(labels.get(rid) or "").strip() or "other",
                     release_year=years.get(rid),
                     pub_date=r["pub_date"],
                     pub_year=r["pub_year"],
