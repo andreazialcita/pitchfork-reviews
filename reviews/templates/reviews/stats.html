@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Review Stats</title>
+</head>
+<body>
+    <h1>Review Stats</h1>
+    <p><a href="{% url 'search' %}">Search reviews</a></p>
+
+    <h2>Average score by year</h2>
+    <img src="{% url 'stats_plot' %}" alt="Average score by publication year">
+    <table border="1" cellpadding="4">
+        <tr><th>Year</th><th>Average score</th><th>Reviews</th></tr>
+        {% for row in year_stats %}
+            <tr><td>{{ row.pub_year }}</td><td>{{ row.avg_score|floatformat:2 }}</td><td>{{ row.num_reviews }}</td></tr>
+        {% endfor %}
+    </table>
+
+    <h2>Average score and count per genre</h2>
+    <table border="1" cellpadding="4">
+        <tr><th>Genre</th><th>Average score</th><th>Reviews</th></tr>
+        {% for g in genre_stats %}
+            <tr><td>{{ g.name|title }}</td><td>{{ g.avg_score|floatformat:2 }}</td><td>{{ g.num_reviews }}</td></tr>
+        {% endfor %}
+    </table>
+
+    <h2>Most reviewed artists</h2>
+    <table border="1" cellpadding="4">
+        <tr><th>Artist</th><th>Reviews</th><th>Average score</th></tr>
+        {% for a in top_artists %}
+            <tr><td>{{ a.name|title }}</td><td>{{ a.num_reviews }}</td><td>{{ a.avg_score|floatformat:2 }}</td></tr>
+        {% endfor %}
+    </table>
+
+    <h2>Top 10 albums</h2>
+    <form method="get">
+        <label>Genre:
+            <select name="top_genre">
+                <option value="">Any</option>
+                {% for g in genres %}
+                    <option value="{{ g.name }}" {% if g.name == top_genre %}selected{% endif %}>{{ g.name|title }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>Release year: <input type="number" name="top_year" value="{{ top_year }}"></label>
+        <button type="submit">Show</button>
+    </form>
+    <table border="1" cellpadding="4">
+        <tr><th>Album</th><th>Artist</th><th>Score</th><th>Released</th></tr>
+        {% for review in top_albums %}
+            <tr>
+                <td>{{ review.title|title }}</td>
+                <td>{{ review.artist.name|title }}</td>
+                <td>{{ review.score }}</td>
+                <td>{{ review.release_year|default:"-" }}</td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="4">No albums found.</td></tr>
+        {% endfor %}
+    </table>
+
+    <h2>Average score by years between release and review</h2>
+    <table border="1" cellpadding="4">
+        <tr><th>Gap (years)</th><th>Average score</th><th>Reviews</th></tr>
+        {% for row in gap_stats %}
+            <tr><td>{{ row.gap }}</td><td>{{ row.avg_score|floatformat:2 }}</td><td>{{ row.num_reviews }}</td></tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

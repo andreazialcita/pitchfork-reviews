@@ -17,6 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from reviews import query_views
+
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("reviews/search/", query_views.search, name="search"),
+    path("stats/", query_views.stats, name="stats"),
+    path("stats/plot.png", query_views.stats_plot, name="stats_plot"),
 ]

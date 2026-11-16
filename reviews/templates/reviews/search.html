@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Search Reviews</title>
+</head>
+<body>
+    <h1>Search Reviews</h1>
+    <p><a href="{% url 'stats' %}">View stats</a></p>
+
+    <form method="get">
+        <p>
+            <label>Artist or album: <input type="text" name="q" value="{{ q }}"></label>
+            <label>Author: <input type="text" name="author" value="{{ author }}"></label>
+        </p>
+        <p>
+            <label>Genre:
+                <select name="genre">
+                    <option value="">Any</option>
+                    {% for g in genres %}
+                        <option value="{{ g.name }}" {% if g.name == genre %}selected{% endif %}>{{ g.name|title }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+        </p>
+        <p>
+            Score from
+            <input type="number" name="min_score" value="{{ min_score }}" min="0" max="10" step="0.1">
+            to
+            <input type="number" name="max_score" value="{{ max_score }}" min="0" max="10" step="0.1">
+        </p>
+        <p>
+            Publication year from
+            <input type="number" name="min_year" value="{{ min_year }}">
+            to
+            <input type="number" name="max_year" value="{{ max_year }}">
+        </p>
+        <p>
+            <label>Sort by:
+                <select name="sort">
+                    {% for value, label in sort_choices %}
+                        <option value="{{ value }}" {% if value == sort %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+        </p>
+        <button type="submit">Search</button>
+        <a href="{% url 'search' %}">Clear</a>
+    </form>
+
+    <p>{{ page.paginator.count }} review(s) found.</p>
+
+    <table border="1" cellpadding="4">
+        <tr>
+            <th>Album</th>
+            <th>Artist</th>
+            <th>Score</th>
+            <th>Genres</th>
+            <th>Author</th>
+            <th>Published</th>
+            <th>Released</th>
+        </tr>
+        {% for review in page %}
+            <tr>
+                <td>{{ review.title|title }}{% if review.best_new_music %} (Best New Music){% endif %}</td>
+                <td>{{ review.artist.name|title }}</td>
+                <td>{{ review.score }}</td>
+                <td>{% for g in review.genres.all %}{{ g.name|title }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+                <td>{{ review.author|title }}</td>
+                <td>{{ review.pub_date }}</td>
+                <td>{{ review.release_year|default:"-" }}</td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="7">No reviews match your search.</td></tr>
+        {% endfor %}
+    </table>
+
+    <p>
+        {% if page.has_previous %}
+            <a href="?{{ querystring }}&page={{ page.previous_page_number }}">Previous</a>
+        {% endif %}
+        Page {{ page.number }} of {{ page.paginator.num_pages }}
+        {% if page.has_next %}
+            <a href="?{{ querystring }}&page={{ page.next_page_number }}">Next</a>
+        {% endif %}
+    </p>
+</body>
+</html>
