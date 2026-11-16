@@ -1,0 +1,35 @@
+{% extends 'reviews/base_template.html' %}
+
+{% block pagetitle %}{{ review.title }} {{ review.artist.name}} {% endblock %}
+
+{%block maincontent%}
+<h2>Review Details</h2>
+<ul>
+    <li>Record: {{ review.title }}</li>
+    <li>Artist: {{ review.artist.name }}</li>
+    <li>Release Year: {{ review.release_year }}</li>
+    <li>Score: {{ review.score }}</li>
+    <li>Author: {{ review.author }}</li>
+    <li>Published: {{ review.pub_date }}</li>
+    <li>Url: 
+        {% if review.url %}
+            <a href="{{ review.url }}" target="_blank" rel="noopener noreferrer">{{ review.url }}</a>
+        {% else %}
+            -
+        {% endif %}</li>
+</ul>
+
+{% if review.genres.exists %}
+<h3>Genres</h3>
+<ul>
+    {% for genre in review.genres.all %}
+    <li>{{ genre.name }}</li>
+    {% endfor %}
+</ul>
+{% else %}
+<p> No genres found for this review. </p>
+{% endif %}
+
+<p><a href="{% url 'reviews:review-update' review.id %}">Edit Review</a> </p>
+<p><a href="{% url 'reviews:review-delete' review.id %}">Delete Review</a> </p>
+{% endblock %}

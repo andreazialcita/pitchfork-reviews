@@ -1,0 +1,30 @@
+{% extends 'reviews/base_template.html' %}
+
+{% block pagetitle %}Add Review Form{% endblock %}
+{% block maincontent %}
+<h2>{{ actionname }} Review</h2>
+
+<form method="post">
+    {% csrf_token %}
+    <ul>
+        {{ form.as_ul }}
+    </ul>
+
+    <datalist id="artist-list">
+        {% for artist in artists %}
+            <option value="{{ artist.name }}">
+        {% endfor %}
+    </datalist>
+
+    <button type="submit">Save Review</button>
+</form>
+
+{% if messages %}
+<ul>
+    {% for message in messages %}
+        <li>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% endblock %}

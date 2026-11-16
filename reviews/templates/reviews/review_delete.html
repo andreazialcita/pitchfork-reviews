@@ -1,0 +1,13 @@
+{% extends 'reviews/base_template.html' %}
+
+{% block pagetitle %}Delete Review #{{ review.id }}{% endblock %}
+{%block maincontent%}
+<h2>Delete Review</h2>
+
+<form method = "post">
+    {% csrf_token %}
+    <p>Are you sure you want to delete Review <b># {{ review.id }}: {{ review.title }} {{ review.artist.name}}</b>?</p>
+    <a href="{%url 'search'%}">Cancel</a>
+    <input type="submit" value="Yes">
+</form>
+{% endblock %}
