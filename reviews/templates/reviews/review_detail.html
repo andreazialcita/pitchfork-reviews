@@ -3,13 +3,13 @@
 {% block pagetitle %}{{ review.title }} {{ review.artist.name}} {% endblock %}
 
 {%block maincontent%}
-<h2>Review Details</h2>
+<h2>Review of {{ review.title|title }} by {{ review.artist.name|title }}</h2>
 <ul>
-    <li>Record: {{ review.title }}</li>
-    <li>Artist: {{ review.artist.name }}</li>
-    <li>Release Year: {{ review.release_year }}</li>
+    <li>Record Title: {{ review.title|title }}</li>
+    <li>Artist: {{ review.artist.name|title }}</li>
+    <li>Record Release Year: {{ review.release_year|default:"-" }}</li>
     <li>Score: {{ review.score }}</li>
-    <li>Author: {{ review.author }}</li>
+    <li>Author: {{ review.author|title }}</li>
     <li>Published: {{ review.pub_date }}</li>
     <li>Url: 
         {% if review.url %}
